@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap';
 import {Link} from "react-router-dom"
-import axios from 'axios';
 import { login,signUp } from '../../store/auth-actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 function AuthForm() {
     const [isLogin,setIsLogin] = useState(true);
@@ -12,6 +12,8 @@ function AuthForm() {
     const [confirmPassword,setConfirmPassword] = useState("");
     const dispatch = useDispatch();
     const [error,setError] = useState("");
+    const history = useHistory();
+    const type = useSelector(state=>state.auth.type);
 
     const emailChangeHandler = (e)=>{
         setEmail(e.target.value);
@@ -39,6 +41,12 @@ function AuthForm() {
         }
         if(isLogin){
           dispatch(login(userData));
+          if(type==="admin"){
+            history.replace("/admin/home");
+          }else if(type==="user"){
+            history.replace("/user/home");
+          }
+
          
         }else{
           const login = setIsLogin(true);

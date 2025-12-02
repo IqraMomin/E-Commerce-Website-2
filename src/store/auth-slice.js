@@ -4,7 +4,7 @@ import { login } from "./auth-actions";
 const initialState={
     error:null,
     loading:null,
-    type:null,
+    type:"admin",
     token:null,
     isLoggedIn:false
 }
