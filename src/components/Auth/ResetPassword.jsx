@@ -1,39 +1,17 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { resetPassword } from "../../store/auth-actions";
 
 function ResetPassword() {
   const resetInputRef = useRef();
+  const dispatch = useDispatch();
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
-
-    try {
-      const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBfsyJB-lvBYodAs_2Nu0TQfse-V5JiMlU",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            requestType: "PASSWORD_RESET",
-            email: resetInputRef.current.value,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.error.message);
-        return;
-      }
-
-      alert("Password reset link sent to your email!");
-    } catch (err) {
-      console.log(err);
-    }
+    const email = resetInputRef.current.value;
+    dispatch(resetPassword(email));    
   };
 
   return (

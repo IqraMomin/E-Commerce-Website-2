@@ -2,12 +2,15 @@ import React, { useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap';
 import {Link} from "react-router-dom"
 import axios from 'axios';
+import { login,signUp } from '../../store/auth-actions';
+import { useDispatch } from 'react-redux';
 
 function AuthForm() {
     const [isLogin,setIsLogin] = useState(true);
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
     const [confirmPassword,setConfirmPassword] = useState("");
+    const dispatch = useDispatch();
     const [error,setError] = useState("");
 
     const emailChangeHandler = (e)=>{
@@ -20,7 +23,7 @@ function AuthForm() {
     const confirmPasswordHandler = (e)=>{
       setConfirmPassword(e.target.value);
     }
-    const formChangeHandler =async (e)=>{
+    const formChangeHandler =(e)=>{
         e.preventDefault();
         if (email.trim().length === 0 || password.trim().length === 0 || !isLogin && confirmPassword.trim().length === 0) {
           setError("All Fields are required");
@@ -35,21 +38,11 @@ function AuthForm() {
             email,password,returnSecureToken:true
         }
         if(isLogin){
-          try{
-            const res = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBfsyJB-lvBYodAs_2Nu0TQfse-V5JiMlU",userData);
-            console.log(res);  
-          }catch(err){
-            console.log(err);
-          }
+          dispatch(login(userData));
          
         }else{
-          try{
-            const res = await axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBfsyJB-lvBYodAs_2Nu0TQfse-V5JiMlU",userData);
-            alert("Registration Successful");
-            setIsLogin(true);
-          }catch(err){
-            console.log(err);
-          }
+          const login = setIsLogin(true);
+          dispatch(signUp({userData,login}));
          
         }
         setEmail("");
